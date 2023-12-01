@@ -29,21 +29,20 @@ public static class Solution01
         { "nine", 9 },
     }.ToFrozenDictionary();
 
-    public static int SolveP1(string data)
+    public static int SolveP1(ReadOnlySpan<char> data)
     {
-        var span = data.AsSpan();
         var sum = 0;
-        var linesCount = span.Count('\n') + 1;
+        var linesCount = data.Count('\n') + 1;
         var destination = ArrayPool<Range>.Shared.Rent(linesCount);
 
         try
         {
             ReadOnlySpan<Range> destinationSpan = destination.AsSpan()[..linesCount];
-            span.Split(destination, '\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            data.Split(destination, '\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             foreach (var range in destinationSpan)
             {
-                var line = span[range.Start..range.End];
+                var line = data[range.Start..range.End];
                 var firstDigit = 0;
                 var lastDigit = 0;
 
@@ -77,21 +76,20 @@ public static class Solution01
         return sum;
     }
 
-    public static int SolveP2(string data)
+    public static int SolveP2(ReadOnlySpan<char> data)
     {
-        var span = data.AsSpan();
         var sum = 0;
-        var linesCount = span.Count('\n') + 1;
+        var linesCount = data.Count('\n') + 1;
         var destination = ArrayPool<Range>.Shared.Rent(linesCount);
 
         try
         {
             ReadOnlySpan<Range> destinationSpan = destination.AsSpan()[..linesCount];
-            span.Split(destination, '\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            data.Split(destination, '\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             foreach (var range in destinationSpan)
             {
-                var line = span[range.Start..range.End];
+                var line = data[range.Start..range.End];
                 var firstDigit = (Index: int.MaxValue, Value: -1);
                 var lastDigit = (Index: int.MinValue, Value: -1);
 
