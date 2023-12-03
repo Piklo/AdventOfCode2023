@@ -17,3 +17,6 @@ dotnet_diagnostic.SA1201.severity = none
 
 # SA1202: Elements should be ordered by access
 dotnet_diagnostic.SA1202.severity = none
+
+# SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1601.severity = none
