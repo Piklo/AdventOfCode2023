@@ -1,53 +1,36 @@
-﻿using System.Text.RegularExpressions;
+﻿namespace AdventOfCode2023.Day05;
 
-namespace AdventOfCode2023.Day05;
-
-public static partial class Solution05
+public static class Solution05
 {
-    public static int SolveP1(string data)
+    public static long SolveP1(string data)
     {
-        var res = 0;
-        var seeds = GetSeeds(data);
-        var seedsToSoil = GetSeedToSoilMap(data);
-        return res;
-    }
-
-    private static int[] GetSeeds(string data)
-    {
-        var match = GetSeedsRegex().Matches(data);
-        var seeds = new int[match.Count];
-
-        for (var i = 0; i < match.Count; i++)
+        var minLocation = long.MaxValue;
+        var garden = new Garden(data);
+        foreach (var seed in garden.SeedValues)
         {
-            var seed = int.Parse(match[i].Value);
-            seeds[i] = seed;
+            var location = garden.GetLocation(seed);
+            minLocation = Math.Min(minLocation, location);
         }
 
-        return seeds;
+        return minLocation;
     }
 
-    private static Dictionary<int, int> GetSeedToSoilMap(string data)
+    public static long SolveP2(string data)
     {
-        var dict = new Dictionary<int, int>();
-        var matches = GetSeedToSoilRegex().Matches(data);
-        foreach (var match in (IEnumerable<Match>)matches)
+        var minLocation = long.MaxValue;
+        var garden = new Garden(data);
+        for (var i = 0; i < garden.SeedValues.Length; i += 2)
         {
-            var destination = int.Parse(match.Groups["destination"].ValueSpan);
-            var source = int.Parse(match.Groups["source"].ValueSpan);
-            var range = int.Parse(match.Groups["range"].ValueSpan);
-            for (var i = 0; i < range; i++)
+            var seedStart = garden.SeedValues[i];
+            var length = garden.SeedValues[i + 1];
+
+            for (var j = 0; j < length; j++)
             {
-                dict[source + i] = destination + i;
+                var location = garden.GetLocation(seedStart + j);
+                minLocation = Math.Min(minLocation, location);
             }
         }
 
-        return dict;
+        return minLocation;
     }
-
-    [GeneratedRegex("(?<=seeds:.*)\\d+")]
-    private static partial Regex GetSeedsRegex();
-
-    // copy and paste this regex for other maps
-    [GeneratedRegex("(?<=seed-to-soil map:\\s+.*\\s?)^\\s?(?<destination>\\d+).(?<source>\\d+).(?<range>\\d+)\\s?$", RegexOptions.Multiline)]
-    private static partial Regex GetSeedToSoilRegex();
 }

@@ -47,4 +47,28 @@ public static class Tests05
 
         Assert.Equal(35, res);
     }
+
+    [Fact]
+    public static void TestP1()
+    {
+        var res = Solution05.SolveP1(Input05.Data);
+
+        Assert.Equal(462648396, res);
+    }
+
+    [Fact]
+    public static void TestExampleP2()
+    {
+        var res = Solution05.SolveP2(Example);
+
+        Assert.Equal(46, res);
+    }
+
+    //[Fact]
+    //public static void TestP2()
+    //{
+    //    var res = Solution05.SolveP2(Input05.Data);
+
+    //    Assert.Equal(-1, res);
+    //}
 }
