@@ -1,5 +1,4 @@
-﻿using System.Collections.Frozen;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023.Day08;
 
@@ -37,40 +36,9 @@ public static partial class Solution08
         return steps;
     }
 
-    public static int SolveP2(string data)
+    public static long SolveP2(string data)
     {
-        var steps = 0;
-
         var map = new Map(data);
-        var dictionary = GetDictionary(map);
-
-        var current = map.Nodes.Where(node => node.Value[^1] == 'A').ToArray().AsSpan();
-
-        var sequenceIndex = 0;
-        //while (current.Any(node => node.Value[^1] != 'Z'))
-        while (AnyNodeNotOnZ(current))
-        {
-            var instruction = map.Instruction[sequenceIndex];
-
-            for (var i = 0; i < current.Length; i++)
-            {
-                var node = current[i];
-                current[i] = dictionary[instruction == 'L' ? node.Left : node.Right];
-            }
-
-            steps++;
-            sequenceIndex++;
-            if (sequenceIndex >= map.Instruction.Length)
-            {
-                sequenceIndex = 0;
-            }
-        }
-
-        return steps;
-    }
-
-    private static FrozenDictionary<string, Node> GetDictionary(Map map)
-    {
         var dictionary = new Dictionary<string, Node>();
 
         foreach (var node in map.Nodes)
@@ -78,20 +46,60 @@ public static partial class Solution08
             dictionary[node.Value] = node;
         }
 
-        return dictionary.ToFrozenDictionary();
-    }
+        var current = map.Nodes.Where(node => node.Value[^1] == 'A').ToArray().AsSpan();
+        Span<int> loopLengths = current.Length <= 1024 ? stackalloc int[current.Length] : new int[current.Length];
 
-    private static bool AnyNodeNotOnZ(ReadOnlySpan<Node> nodes)
-    {
-        for (var i = 0; i < nodes.Length; i++)
+        for (var i = 0; i < current.Length; i++)
         {
-            if (nodes[i].Value[^1] != 'Z')
+            var node = current[i];
+            var loopLength = 0;
+            var sequenceIndex = 0;
+            while (node.Value[^1] != 'Z')
             {
-                return true;
+                var instruction = map.Instruction[sequenceIndex];
+
+                node = dictionary[instruction == 'L' ? node.Left : node.Right];
+
+                loopLength++;
+                sequenceIndex++;
+                if (sequenceIndex >= map.Instruction.Length)
+                {
+                    sequenceIndex = 0;
+                }
+            }
+
+            loopLengths[i] = loopLength;
+        }
+
+        var primeFactors = new Dictionary<int, int>(current.Length);
+        foreach (var loopLength in loopLengths)
+        {
+            var factors = GetPrimeFactors(loopLength);
+
+            foreach (var (number, count) in factors)
+            {
+                if (!primeFactors.TryGetValue(number, out var currentCount) || currentCount < count)
+                {
+                    primeFactors[number] = count;
+                }
             }
         }
 
-        return false;
+        if (primeFactors.Count == 0)
+        {
+            return 0;
+        }
+
+        var steps = 1L;
+        foreach (var (number, count) in primeFactors)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                steps *= number;
+            }
+        }
+
+        return steps;
     }
 
     private partial class Map
@@ -125,4 +133,78 @@ public static partial class Solution08
     }
 
     private readonly record struct Node(string Value, string Left, string Right);
+
+    private static Dictionary<int, int> GetPrimeFactors(int value)
+    {
+        var dict = new Dictionary<int, int>();
+
+        while (value % 2 == 0)
+        {
+            value /= 2;
+            if (!dict.TryGetValue(2, out var count))
+            {
+                dict[2] = 0;
+            }
+
+            dict[2] = ++count;
+        }
+
+        for (var i = 3; value > 1; i += 2)
+        {
+            while (value % i == 0)
+            {
+                if (!dict.TryGetValue(i, out var count))
+                {
+                    dict[i] = 0;
+                }
+
+                value /= i;
+                dict[i] = ++count;
+            }
+        }
+
+        return dict;
+    }
+
+    private static bool IsPrime(int value)
+    {
+        if (value < 2)
+        {
+            return false;
+        }
+
+        if (value < 4)
+        {
+            return true;
+        }
+
+        if (value % 2 == 0)
+        {
+            return false;
+        }
+
+        if (value < 9)
+        {
+            return true;
+        }
+
+        if (value % 3 == 0)
+        {
+            return false;
+        }
+
+        var r = (int)Math.Floor(Math.Sqrt(value));
+        var f = 5;
+        while (f <= r)
+        {
+            if (value % f == 0 || value % (f + 2) == 0)
+            {
+                return false;
+            }
+
+            f += 6;
+        }
+
+        return true;
+    }
 }

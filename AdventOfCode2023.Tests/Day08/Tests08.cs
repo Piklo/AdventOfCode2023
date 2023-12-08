@@ -64,11 +64,11 @@ public static class Tests08
         Assert.Equal(6, res);
     }
 
-    //[Fact]
-    //public static void TestP2()
-    //{
-    //    var res = Solution08.SolveP2(Input08.Data);
+    [Fact]
+    public static void TestP2()
+    {
+        var res = Solution08.SolveP2(Input08.Data);
 
-    //    Assert.Equal(-1, res);
-    //}
+        Assert.Equal(23977527174353, res);
+    }
 }
