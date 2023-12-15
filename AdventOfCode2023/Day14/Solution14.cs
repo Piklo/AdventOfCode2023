@@ -74,86 +74,154 @@ public static class Solution14
 
     private static void TiltNorth(char[][] rocks)
     {
-        bool movedSomething;
-        do
+        for (var column = 0; column < rocks[0].Length; column++)
         {
-            movedSomething = false;
-            for (var i = 1; i < rocks.Length; i++)
+            var top = 0;
+            var bottom = 0;
+            while (top < rocks.Length && bottom < rocks.Length)
             {
-                for (var j = 0; j < rocks[i].Length; j++)
+                while (top < rocks.Length && rocks[top][column] != '.')
                 {
-                    if (rocks[i][j] == 'O' && rocks[i - 1][j] == '.')
-                    {
-                        rocks[i - 1][j] = 'O';
-                        rocks[i][j] = '.';
-                        movedSomething = true;
-                    }
+                    top++;
                 }
+
+                if (bottom <= top)
+                {
+                    bottom = top + 1;
+                }
+
+                if (top >= rocks.Length || bottom >= rocks.Length)
+                {
+                    break;
+                }
+
+                if (rocks[bottom][column] == 'O')
+                {
+                    rocks[top][column] = 'O';
+                    rocks[bottom][column] = '.';
+                }
+                else if (rocks[bottom][column] == '#')
+                {
+                    top = bottom + 1;
+                }
+
+                bottom++;
             }
-        } while (movedSomething);
+        }
     }
 
     private static void TiltSouth(char[][] rocks)
     {
-        bool movedSomething;
-        do
+        for (var column = 0; column < rocks[0].Length; column++)
         {
-            movedSomething = false;
-            for (var i = 0; i + 1 < rocks.Length; i++)
+            var top = rocks.Length - 1;
+            var bottom = rocks.Length - 1;
+            while (bottom >= 0 && top >= 0)
             {
-                for (var j = 0; j < rocks[i].Length; j++)
+                while (bottom >= 0 && rocks[bottom][column] != '.')
                 {
-                    if (rocks[i][j] == 'O' && rocks[i + 1][j] == '.')
-                    {
-                        rocks[i + 1][j] = 'O';
-                        rocks[i][j] = '.';
-                        movedSomething = true;
-                    }
+                    bottom--;
                 }
+
+                if (bottom <= top)
+                {
+                    top = bottom - 1;
+                }
+
+                if (bottom < 0 || top < 0)
+                {
+                    break;
+                }
+
+                if (rocks[top][column] == 'O')
+                {
+                    rocks[bottom][column] = 'O';
+                    rocks[top][column] = '.';
+                }
+                else if (rocks[top][column] == '#')
+                {
+                    bottom = top - 1;
+                }
+
+                top--;
             }
-        } while (movedSomething);
+        }
     }
 
     private static void TiltWest(char[][] rocks)
     {
-        bool movedSomething;
-        do
+        for (var row = 0; row < rocks[0].Length; row++)
         {
-            movedSomething = false;
-            for (var i = 0; i < rocks.Length; i++)
+            var left = 0;
+            var right = 0;
+            while (left < rocks.Length && right < rocks.Length)
             {
-                for (var j = 1; j < rocks[i].Length; j++)
+                while (left < rocks.Length && rocks[row][left] != '.')
                 {
-                    if (rocks[i][j] == 'O' && rocks[i][j - 1] == '.')
-                    {
-                        rocks[i][j - 1] = 'O';
-                        rocks[i][j] = '.';
-                        movedSomething = true;
-                    }
+                    left++;
                 }
+
+                if (right <= left)
+                {
+                    right = left + 1;
+                }
+
+                if (left >= rocks.Length || right >= rocks.Length)
+                {
+                    break;
+                }
+
+                if (rocks[row][right] == 'O')
+                {
+                    rocks[row][left] = 'O';
+                    rocks[row][right] = '.';
+                }
+                else if (rocks[row][right] == '#')
+                {
+                    left = right + 1;
+                }
+
+                right++;
             }
-        } while (movedSomething);
+        }
     }
 
     private static void TiltEast(char[][] rocks)
     {
-        bool movedSomething;
-        do
+        for (var row = 0; row < rocks[0].Length; row++)
         {
-            movedSomething = false;
-            for (var i = 0; i < rocks.Length; i++)
+            var left = rocks.Length - 1;
+            var right = rocks.Length - 1;
+            while (left >= 0 && right >= 0)
             {
-                for (var j = 0; j + 1 < rocks[i].Length; j++)
+                while (left >= 0 && rocks[row][left] != '.')
                 {
-                    if (rocks[i][j] == 'O' && rocks[i][j + 1] == '.')
-                    {
-                        rocks[i][j + 1] = 'O';
-                        rocks[i][j] = '.';
-                        movedSomething = true;
-                    }
+                    left--;
                 }
+
+                if (left <= right)
+                {
+                    right = left - 1;
+                }
+
+                if (left < 0 || right < 0)
+                {
+                    break;
+                }
+
+                if (rocks[row][right] == 'O')
+                {
+                    rocks[row][left] = 'O';
+                    rocks[row][right] = '.';
+                }
+                else if (rocks[row][right] == '#')
+                {
+                    left = right - 1;
+                }
+
+                right--;
             }
-        } while (movedSomething);
+        }
     }
 
     private static int CountLoad(char[][] rocks)
