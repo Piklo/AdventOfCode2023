@@ -32,4 +32,20 @@ public static class Tests14
 
         Assert.Equal(109098, res);
     }
+
+    [Fact]
+    public static void TestExampleP2()
+    {
+        var res = Solution14.SolveP2(Example);
+
+        Assert.Equal(64, res);
+    }
+
+    [Fact]
+    public static void TestP2()
+    {
+        var res = Solution14.SolveP2(Input14.Data);
+
+        Assert.Equal(100064, res);
+    }
 }
